@@ -7,6 +7,8 @@ from selenium.common.exceptions import NoAlertPresentException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from .locators import BasePageLocators as bpl
+
 IMPLICIT_TIMEOUT_DEFAULT = 10
 
 
@@ -19,6 +21,13 @@ class BasePage:
 
     def open(self):
         self.browser.get(url=self.url)
+
+    def go_to_login_page(self):
+        login_link = self.browser.find_element(*bpl.LOGIN_LINK_LOCATOR)
+        login_link.click()
+
+    def should_exist_login_link(self):
+        assert self.is_element_present(*bpl.LOGIN_LINK_LOCATOR), "login link was not found"
 
     def solve_quiz_get_code(self):
         alert = self.browser.switch_to.alert
