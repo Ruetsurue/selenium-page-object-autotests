@@ -1,17 +1,20 @@
 import math
 
 from selenium.webdriver import Chrome
-from selenium.common import NoSuchElementException
+from selenium.common import NoSuchElementException, TimeoutException
 from selenium.common.exceptions import NoAlertPresentException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 IMPLICIT_TIMEOUT_DEFAULT = 10
 
 
 class BasePage:
-    def __init__(self, browser_obj, url, timeout=IMPLICIT_TIMEOUT_DEFAULT):
+    def __init__(self, browser_obj, url, use_implicit_wait=False, implicit_timeout=IMPLICIT_TIMEOUT_DEFAULT):
         self.browser: Chrome = browser_obj
         self.url = url
-        self.browser.implicitly_wait(timeout)
+        if use_implicit_wait:
+            self.browser.implicitly_wait(implicit_timeout)
 
     def open(self):
         self.browser.get(url=self.url)
@@ -26,7 +29,7 @@ class BasePage:
         try:
             alert = self.browser.switch_to.alert
             alert_text = alert.text
-            print(f"code: { alert_text }")
+            print(f"code: {alert_text}")
             alert.accept()
 
         except NoAlertPresentException:
@@ -36,6 +39,25 @@ class BasePage:
         try:
             self.browser.find_element(search_method, selector)
         except NoSuchElementException:
+            return False
+
+        return True
+
+    def is_element_not_present(self, search_method, selector, timeout):
+        try:
+            WebDriverWait(driver=self.browser, timeout=timeout, poll_frequency=1,
+                          ignored_exceptions=None).until(EC.presence_of_element_located((search_method, selector)))
+        except TimeoutException:
+            return True
+
+        return False
+
+    def is_element_disappeared(self, search_method, selector, timeout):
+        try:
+            WebDriverWait(driver=self.browser, timeout=timeout, poll_frequency=1,
+                          ignored_exceptions=None).until_not(EC.presence_of_element_located((search_method, selector)))
+
+        except TimeoutException:
             return False
 
         return True
