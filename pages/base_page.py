@@ -1,6 +1,7 @@
 import math
+from typing import Union
 
-from selenium.webdriver import Chrome
+from selenium.webdriver import Chrome, Firefox
 from selenium.common import NoSuchElementException, TimeoutException
 from selenium.common.exceptions import NoAlertPresentException
 from selenium.webdriver.support.ui import WebDriverWait
@@ -10,8 +11,8 @@ IMPLICIT_TIMEOUT_DEFAULT = 10
 
 
 class BasePage:
-    def __init__(self, browser_obj, url, use_implicit_wait=False, implicit_timeout=IMPLICIT_TIMEOUT_DEFAULT):
-        self.browser: Chrome = browser_obj
+    def __init__(self, browser_obj: Union[Chrome, Firefox], url, use_implicit_wait=False, implicit_timeout=IMPLICIT_TIMEOUT_DEFAULT):
+        self.browser = browser_obj
         self.url = url
         if use_implicit_wait:
             self.browser.implicitly_wait(implicit_timeout)

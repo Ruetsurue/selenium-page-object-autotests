@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 PRODUCT_PAGE_EXPLICIT_TIMEOUT = 4
 
+
 class ProductPage(BasePage):
     def add_product_to_basket(self):
         self.browser.find_element(*ppl.ADD_PRODUCT_BUTTON).click()
