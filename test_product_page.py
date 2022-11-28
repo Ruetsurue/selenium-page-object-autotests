@@ -2,8 +2,17 @@ import pytest
 
 from pages.product_page import ProductPage
 
-PRODUCT_PAGE_URLS = [r"https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019",
-                     r"https://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-handbook_209/?promo=newYear"
+PRODUCT_PAGE_URLS = ["https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0",
+                     "https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer1",
+                     "https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer2",
+                     "https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer3",
+                     "https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer4",
+                     "https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer5",
+                     "https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer6",
+                     pytest.param("https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer7",
+                                  marks=pytest.mark.xfail(reason="server error on adding a product to basket")),
+                     "https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer8",
+                     "https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer9"
                      ]
 
 
