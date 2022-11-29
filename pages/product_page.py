@@ -1,8 +1,5 @@
 from .base_page import BasePage
 from .locators import ProductPageLocators as ppl
-from selenium.webdriver.support.ui import WebDriverWait
-
-PRODUCT_PAGE_EXPLICIT_TIMEOUT = 4
 
 
 class ProductPage(BasePage):
@@ -39,12 +36,12 @@ class ProductPage(BasePage):
 
     def should_not_be_success_added_to_basket_message(self):
         error_msg = "Unwanted success message found"
-        element_not_found = self.is_element_not_present(*ppl.SUCCESS_MESSAGE, timeout=PRODUCT_PAGE_EXPLICIT_TIMEOUT)
+        element_not_found = self.is_element_not_present(*ppl.SUCCESS_MSG, timeout=super().EXPLICIT_TIMEOUT_DEFAULT)
 
         assert element_not_found, error_msg
 
     def success_added_to_basket_message_should_disappear(self):
         error_msg = "Success message should have disappeared, but it didn't"
-        element_disappeared = self.is_element_disappeared(*ppl.SUCCESS_MESSAGE, timeout=PRODUCT_PAGE_EXPLICIT_TIMEOUT)
+        element_disappeared = self.is_element_disappeared(*ppl.SUCCESS_MSG, timeout=super().EXPLICIT_TIMEOUT_DEFAULT)
 
         assert element_disappeared, error_msg

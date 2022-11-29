@@ -9,11 +9,14 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from .locators import BasePageLocators as bpl
 
-IMPLICIT_TIMEOUT_DEFAULT = 10
-
 
 class BasePage:
-    def __init__(self, browser_obj: Union[Chrome, Firefox], url, use_implicit_wait=False, implicit_timeout=IMPLICIT_TIMEOUT_DEFAULT):
+
+    IMPLICIT_TIMEOUT_DEFAULT = 10
+    EXPLICIT_TIMEOUT_DEFAULT = 4
+
+    def __init__(self, browser_obj: Union[Chrome, Firefox], url, use_implicit_wait=False,
+                 implicit_timeout=IMPLICIT_TIMEOUT_DEFAULT):
         self.browser = browser_obj
         self.url = url
         if use_implicit_wait:
@@ -23,11 +26,14 @@ class BasePage:
         self.browser.get(url=self.url)
 
     def go_to_login_page(self):
-        login_link = self.browser.find_element(*bpl.LOGIN_LINK_LOCATOR)
+        login_link = self.browser.find_element(*bpl.LOGIN_LINK)
         login_link.click()
 
+    def go_to_basket_page(self):
+        self.browser.find_element(*bpl.BASKET_LINK).click()
+
     def should_exist_login_link(self):
-        assert self.is_element_present(*bpl.LOGIN_LINK_LOCATOR), "login link was not found"
+        assert self.is_element_present(*bpl.LOGIN_LINK), "login link was not found"
 
     def solve_quiz_get_code(self):
         alert = self.browser.switch_to.alert
@@ -54,6 +60,14 @@ class BasePage:
         return True
 
     def is_element_not_present(self, search_method, selector, timeout):
+        """Ensures the element is not on the page during the timeout specified.
+        Fails instantly if the element is present.
+
+        :param search_method: ID, CSS_selector, XPath, etc.
+        :param selector: selector value
+        :param timeout: time period during the check is performed
+        :return: True if element was not found during the timeout, False otherwise
+        """
         try:
             WebDriverWait(driver=self.browser, timeout=timeout, poll_frequency=1,
                           ignored_exceptions=None).until(EC.presence_of_element_located((search_method, selector)))
