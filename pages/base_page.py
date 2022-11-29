@@ -35,6 +35,11 @@ class BasePage:
     def should_exist_login_link(self):
         assert self.is_element_present(*bpl.LOGIN_LINK), "login link was not found"
 
+    def should_be_user_authorized(self):
+        is_user_authorized = self.is_element_present(*bpl.USER_ICON)
+        error_msg = "User icon missing, user is probably not authorized"
+        assert is_user_authorized, error_msg
+
     def solve_quiz_get_code(self):
         alert = self.browser.switch_to.alert
         x = alert.text.split(" ")[2]

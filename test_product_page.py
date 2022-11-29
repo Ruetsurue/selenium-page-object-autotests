@@ -1,4 +1,6 @@
 import pytest
+import time
+from faker.providers import internet, misc
 
 from pages.product_page import ProductPage
 from pages.login_page import LoginPage
@@ -19,6 +21,37 @@ PRODUCT_PAGE_URLS_PROMO = \
      "https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer8",
      "https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer9"
      ]
+
+
+@pytest.mark.user_add_products
+class TestUserAddToBasketFromProductPage:
+    @pytest.fixture(scope="function", autouse=True)
+    def setup(self, browser, faker):
+        page = LoginPage(browser_obj=browser, url=LoginPage.LOGIN_PAGE_URL, use_implicit_wait=True)
+        page.open()
+        page.should_be_login_page()
+
+        faker.add_provider(internet)
+        faker.add_provider(misc)
+        email: str = faker.email()
+
+        email_fragments = email.split('@')
+        email_fragments[0] += str(time.time())[-6:]
+        email = '@'.join(email_fragments)
+
+        page.register_new_user(email=email, password=faker.password())
+        page.should_be_user_authorized()
+
+    def test_user_cant_see_success_message_on_opening_page(self, browser):
+        page = ProductPage(browser_obj=browser, url=PRODUCT_URL, use_implicit_wait=True)
+        page.open()
+        page.should_not_be_success_added_to_basket_message()
+
+    def test_user_can_add_product_to_basket(self, browser):
+        page = ProductPage(browser_obj=browser, url=PRODUCT_URL, use_implicit_wait=True)
+        page.open()
+        page.add_product_to_basket()
+        page.should_be_added_to_basket_messages()
 
 
 @pytest.mark.skip
