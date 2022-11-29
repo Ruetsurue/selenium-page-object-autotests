@@ -36,7 +36,7 @@ class TestUserAddToBasketFromProductPage:
         email: str = faker.email()
 
         email_fragments = email.split('@')
-        email_fragments[0] += str(time.time())[-6:]
+        email_fragments[0] += str(time.time())[-8:]
         email = '@'.join(email_fragments)
 
         page.register_new_user(email=email, password=faker.password())
@@ -47,6 +47,7 @@ class TestUserAddToBasketFromProductPage:
         page.open()
         page.should_not_be_success_added_to_basket_message()
 
+    @pytest.mark.need_review
     def test_user_can_add_product_to_basket(self, browser):
         page = ProductPage(browser_obj=browser, url=PRODUCT_URL, use_implicit_wait=True)
         page.open()
@@ -54,7 +55,7 @@ class TestUserAddToBasketFromProductPage:
         page.should_be_added_to_basket_messages()
 
 
-@pytest.mark.skip
+@pytest.mark.need_review
 @pytest.mark.parametrize('product_url', PRODUCT_PAGE_URLS_PROMO)
 def test_guest_can_add_product_to_basket(browser, product_url):
     page = ProductPage(browser_obj=browser, url=product_url)
@@ -92,6 +93,7 @@ def test_guest_should_see_login_link_on_product_page(browser):
     page.should_exist_login_link()
 
 
+@pytest.mark.need_review
 def test_guest_can_go_to_login_page_from_product_page(browser):
     page = ProductPage(browser_obj=browser, url=PRODUCT_URL)
     page.open()
@@ -100,6 +102,7 @@ def test_guest_can_go_to_login_page_from_product_page(browser):
     login_page.should_be_login_page()
 
 
+@pytest.mark.need_review
 def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
     page = ProductPage(browser_obj=browser, url=PRODUCT_URL)
     page.open()
@@ -107,4 +110,3 @@ def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
     page = BasketPage(browser_obj=browser, url=browser.current_url)
     page.should_be_empty_basket()
     page.should_be_only_empty_basket_msg()
-
